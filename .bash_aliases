@@ -2,6 +2,9 @@
 # Please edit as necessary for your own use
 # Add to the end of your ~/.bashrc file
 
+# Add a path for huggingface so it does not waste space in your home dir
+export HF_HOME=/scratch/general/vast/$USER/hf_cache
+
 # NOTE: If you want to keep the alias file separate, add the following line to your ~/.bashrc file
 # if [ -f ~/.bash_aliases ]; then . ~/.bash_aliases; fi
 
