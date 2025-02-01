@@ -10,6 +10,9 @@
 #SBATCH --account=gtao-gpu-np         # Specify your account
 #SBATCH --partition=partition-gpu-np  # Partition to use (PLEASE FILL IN YOURS)
 
+#SBATCH --mail-type=END,FAIL
+#SBATCH --mail-user=example@email.edu  # VERY USEFUL: send an email once the script finishes
+
 export WORKDIR=$SLURM_SUBMIT_DIR
 
 # scratch dir
