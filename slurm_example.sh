@@ -2,12 +2,12 @@
 
 #SBATCH --time=1:00:00                # Adjust the requested wall time as necessary
 #SBATCH --nodes=1                     # Use 1 node
-#SBATCH --gres=gpu:h100nvl:1          # Request 1 GPU, adjust depending on availability
-#SBATCH --mem=80G                     # Mem
+#SBATCH --gres=gpu:a6000:1            # Request 1 GPU, adjust depending on availability
+#SBATCH --mem=64G                     # Mem
 #SBATCH --ntasks=1                    # Number of tasks, adjust if needed
 #SBATCH -o slurm-%j.out-%N            # Output log
 #SBATCH -e slurm-%j.err-%N            # Error log
-#SBATCH --account=gtao-gpu-np         # Specify your account
+#SBATCH --account=account-gpu-np      # Specify your account (PLEASE FILL IN YOURS, AND PLEASE NOTE THIS IS FOR NOTCHPEAK (np))
 #SBATCH --partition=partition-gpu-np  # Partition to use (PLEASE FILL IN YOURS)
 
 #SBATCH --mail-type=END,FAIL
