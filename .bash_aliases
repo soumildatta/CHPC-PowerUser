@@ -32,3 +32,5 @@ slurmout() {
 
 # Display all jobs running on the node. Replace notch501 with your node name that contains the GPUs
 alias fullqueue='squeue -w notch501'
+
+source ~/.createslurm
