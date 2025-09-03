@@ -1,0 +1,65 @@
+# convenient alias for quickly creating a slurm job template script
+createslurm() {
+  local filename=""
+  local gpu="a6000"            
+  local env="none"   
+  local mem="64"              
+  local gpus="1"              
+  local time="1:00:00"
+  local nodes="1"
+  local ntasks="1"
+  local account="account"
+  local partition="account"
+  local qos="account"
+
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -f|--file)      filename="$2"; shift 2;;
+      -g|--gpu)       gpu="$2"; shift 2;
+      -n|--gpus)      gpus="$2"; shift 2;;
+      -m|--mem)       mem="${2%G}"; shift 2;;
+      -e|--env)       env="$2"; shift 2;;
+      -t|--time)      time="$2"; shift 2;;
+      -a|--account)   account="$2"; shift 2;;
+      -p|--partition) partition="$2"; shift 2;;
+      -q|--qos)       qos="$2"; shift 2;;
+      --) shift; break;;
+      *)  if [[ -z "$filename" ]]; then filename="$1"; shift; else
+            echo "Unknown arg: $1"; return 1; fi;;
+    esac
+  done
+
+  if [[ -z "$filename" ]]; then
+    filename="job_$(date +%Y%m%d_%H%M%S).sh"
+  fi
+  [[ "$filename" != *.sh ]] && filename="${filename}.sh"
+  [[ "$mem" =~ G$ ]] || mem="${mem}G"
+
+  cat > "$filename" <<EOF
+#!/bin/bash
+
+#SBATCH --time=${time}        # Adjust the wall time as necessary
+#SBATCH --nodes=${nodes}      # Use ${nodes} node(s)
+#SBATCH --gres=gpu:${gpu}:${gpus} # Request ${gpus} ${gpu} GPU(s)
+#SBATCH --mem=${mem}          # Memory
+#SBATCH --ntasks=${ntasks}    # Number of tasks
+#SBATCH -o slurm-%j.out-%N    # Output log
+#SBATCH -e slurm-%j.err-%N    # Error log
+#SBATCH --account=${account}
+#SBATCH --partition=${partition}
+#SBATCH --qos=${qos}
+
+module use \$HOME/MyModules
+module load miniforge3/latest
+
+eval "\$(/uufs/chpc.utah.edu/common/home/u1529523/software/pkg/miniforge3/bin/conda shell.bash hook)"
+conda activate /uufs/chpc.utah.edu/common/home/gtao-group1/u1529523/conda_envs/${env}
+
+# --- Your commands below ---
+# srun python your_script.py
+EOF
+
+  chmod +x "$filename"
+  echo "Created $filename"
+  echo "Edit and submit with: sbatch $filename"
+}
